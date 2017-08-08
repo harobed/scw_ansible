@@ -59,11 +59,10 @@ class ScwAnsible(object):
                     if env not in hostgroups:
                         hostgroups[env] = {'hosts': []}
                     hostgroups[env]['hosts'].append(name)
-                if 'public_ip' not in server:
-                    continue
-                if server.get('public_ip') is None:
-                    continue
-                var['ansible_ssh_host'] = server['public_ip']['address']
+                if server.get('public_ip', None) is None:
+                    var['ansible_ssh_host'] = server['private_ip']
+                else:
+                    var['ansible_ssh_host'] = server['public_ip']['address']
                 var['scw'] = server
                 hostgroups['_meta']['hostvars'][name] = var
 
