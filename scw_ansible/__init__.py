@@ -49,6 +49,7 @@ class ScwAnsible(object):
                 environments = []
                 for tag in server.get('tags'):
                     if tag.find(':') == -1:
+                        environments.append("tag_%s" % tag)
                         continue
                     (key, value) = tag.split(':', 1)
                     if key == 'environment':
