@@ -1,7 +1,9 @@
 import os
 import json
 import argparse
+import sys
 from scaleway.apis import ComputeAPI
+from ConfigParser import ConfigParser
 
 
 class ScwServer(object):
@@ -33,6 +35,12 @@ class ScwAnsible(object):
             region = os.environ['SCW_REGION']
         else:
             region = 'par1'
+        host_folder = os.path.dirname(sys.argv[0])
+        config_path = os.path.join(host_folder, "scaleway.cfg")
+        config = None
+        if os.path.exists(config_path):
+            config = ConfigParser()
+            config.read(config_path)
 
         hostgroups = {'_meta': {'hostvars': {}}}
 
@@ -56,6 +64,11 @@ class ScwAnsible(object):
                         environments.append(value)
                     else:
                         var[key] = value
+                if config is not None \
+                        and config.has_option('defaults', 'environment') \
+                        and config.get('defaults', 'environment') \
+                        not in environments:
+                    continue
                 for env in environments:
                     if env not in hostgroups:
                         hostgroups[env] = {'hosts': []}
