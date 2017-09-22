@@ -2,6 +2,7 @@ import os
 import json
 import argparse
 import sys
+import re
 from scaleway.apis import ComputeAPI
 from ConfigParser import ConfigParser
 
@@ -50,7 +51,7 @@ class ScwAnsible(object):
             scw = ScwServer("https://cp-{}.scaleway.com".format(region))
             hostgroups = {'_meta': {'hostvars': {}}}
             for server in scw.get_servers():
-                name = server.get('name')
+                name = re.sub(r'[^a-z]', '-', server.get('name').lower())
                 if server.get('state') != 'running':
                     continue
                 var = {}
