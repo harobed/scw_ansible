@@ -51,7 +51,7 @@ class ScwAnsible(object):
             scw = ScwServer("https://cp-{}.scaleway.com".format(region))
             hostgroups = {'_meta': {'hostvars': {}}}
             for server in scw.get_servers():
-                name = re.sub(r'[^a-z]', '-', server.get('name').lower())
+                name = re.sub(r'[^a-z0-9]', '-', server.get('name').lower())
                 if server.get('state') != 'running':
                     continue
                 var = {}
